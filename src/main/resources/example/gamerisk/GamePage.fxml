@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.image.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="937.0" prefWidth="1227.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="example.gamerisk.gampage.GamePageController">
+    <children>
+        <MenuBar prefHeight="29.0" prefWidth="1227.0">
+            <menus>
+                <Menu mnemonicParsing="false" text="File">
+                    <items>
+                        <MenuItem mnemonicParsing="false" text="New"/>
+                        <MenuItem mnemonicParsing="false" text="Load"/>
+                        <MenuItem fx:id="MainMenu" mnemonicParsing="false" onAction="#goToMainMenu" text="Main Menu"/>
+                        <MenuItem fx:id="Save" mnemonicParsing="false" onAction="#save" text="Save"/>
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Edit">
+                    <items>
+                        <MenuItem mnemonicParsing="false" text="Delete"/>
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Help">
+                    <items>
+                        <MenuItem mnemonicParsing="false" text="About"/>
+                    </items>
+                </Menu>
+            </menus>
+        </MenuBar>
+        <SplitPane dividerPositions="0.2383673469387755" layoutY="29.0" prefHeight="909.0" prefWidth="1227.0">
+            <items>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                    <children>
+                        <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="907.0" prefWidth="288.0">
+                            <items>
+                                <AnchorPane fx:id="statusPane" minHeight="0.0" minWidth="0.0" prefHeight="100.0"
+                                            prefWidth="160.0">
+                                    <children>
+                                        <Label fx:id="playerInfo" layoutX="2.0" layoutY="-1.0" prefHeight="29.0"
+                                               prefWidth="286.0" text="Label"/>
+                                    </children>
+                                </AnchorPane>
+                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0"/>
+                            </items>
+                        </SplitPane>
+                    </children>
+                </AnchorPane>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                    <children>
+                        <ImageView fx:id="gameMapPane" fitHeight="907.0" fitWidth="929.0" pickOnBounds="true"
+                                   preserveRatio="true"/>
+                    </children>
+                </AnchorPane>
+            </items>
+        </SplitPane>
+    </children>
+</AnchorPane>
