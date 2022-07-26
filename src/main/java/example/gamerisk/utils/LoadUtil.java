@@ -1,6 +1,9 @@
 package example.gamerisk.utils;
 
+import example.gamerisk.model.Continent;
+import example.gamerisk.model.Country;
 import javafx.scene.control.Alert;
+import lombok.Getter;
 
 import java.io.*;
 import java.util.*;
@@ -12,8 +15,49 @@ import java.util.stream.Stream;
  * be correctly loaded into the map editor.
  */
 
+@Getter
 public class LoadUtil {
-	public static void readFile(File selected) {
+
+	private static final HashMap<String, Continent> continentMap = new HashMap<> ();
+	private static final HashMap<String, Country> countryMap = new HashMap<> ();
+
+	/**
+	 * Method to add a new Continent to the continentMap
+	 *
+	 * @param continent a new continent we want to add
+	 */
+	static void addContinent(Continent continent) {
+
+		continentMap.put (continent.getName (), continent);
+	}
+
+	public static void addCountry(Country country) {
+
+	}
+
+	public static void validateConnected() {
+	}
+
+	public static void validateContinent() {
+	}
+
+	public static void validateCountry() {
+	}
+
+	public static List<Continent> getAllContinents() {
+		return null;
+	}
+
+	public static List<Country> getAllCountry() {
+		return null;
+	}
+
+	public static Country getCountry(String s) {
+		return null;
+	}
+
+	public static Continent getContinent(String continentName) {
+		return null;
 	}
 
 //	private static String label = "";

@@ -41,4 +41,6 @@ public class GamePageController {
 
     }
 
+    public void renderMap() {
+    }
 }
