@@ -9,11 +9,19 @@ module example.gamerisk {
     requires org.kordamp.bootstrapfx.core;
     requires eu.hansolo.tilesfx;
     requires lombok;
+    requires java.desktop;
+    requires com.google.common;
 
-    opens example.gamerisk to javafx.fxml;
-    exports example.gamerisk;
-    exports example.gamerisk.gampage;
-    opens example.gamerisk.gampage to javafx.fxml;
-    exports example.gamerisk.frontpage;
-    opens example.gamerisk.frontpage to javafx.fxml;
+    opens riskgame to javafx.fxml;
+    exports riskgame;
+    opens riskgame.controllers.players to javafx.fxml;
+    opens riskgame.controllers.game.phase to javafx.fxml;
+    exports riskgame.controllers.dice;
+    opens riskgame.controllers.dice to javafx.fxml;
+    exports riskgame.controllers;
+    opens riskgame.controllers to javafx.fxml;
+    exports riskgame.utils;
+    opens riskgame.utils to javafx.fxml;
+    exports riskgame.controllers.game.impl;
+    opens riskgame.controllers.game.impl to javafx.fxml;
 }
