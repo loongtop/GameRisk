@@ -12,16 +12,17 @@ module example.gamerisk {
     requires java.desktop;
     requires com.google.common;
 
-    opens riskgame to javafx.fxml;
-    exports riskgame;
-    opens riskgame.controllers.players to javafx.fxml;
-    opens riskgame.controllers.game.phase to javafx.fxml;
-    exports riskgame.controllers.dice;
-    opens riskgame.controllers.dice to javafx.fxml;
-    exports riskgame.controllers;
-    opens riskgame.controllers to javafx.fxml;
-    exports riskgame.utils;
-    opens riskgame.utils to javafx.fxml;
-    exports riskgame.controllers.game.impl;
-    opens riskgame.controllers.game.impl to javafx.fxml;
+    opens risk to javafx.fxml;
+    exports risk;
+    opens risk.controllers.players to javafx.fxml;
+    opens risk.controllers.game.phase to javafx.fxml;
+    opens risk.controllers.game.status to javafx.fxml;
+    exports risk.controllers.dice;
+    opens risk.controllers.dice to javafx.fxml;
+    exports risk.controllers;
+    opens risk.controllers to javafx.fxml;
+    exports risk.utils;
+    opens risk.utils to javafx.fxml;
+    exports risk.controllers.game;
+    opens risk.controllers.game to javafx.fxml;
 }
