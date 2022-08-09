@@ -12,12 +12,16 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import lombok.Getter;
 import lombok.Setter;
+import risk.controllers.dice.Dice;
 import risk.controllers.game.GameContext;
+import risk.models.impl.Continents;
+import risk.models.impl.Countries;
 import risk.models.impl.Player;
 import risk.utils.RiskAlert;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -93,13 +97,16 @@ public class InitPlayers {
                     .totalArmy(initialArmy[numberOfPlayers - 3])
                     .leftArmy(initialArmy[numberOfPlayers - 3])
                     .picName(s.getText())
+                    .continents(new Continents(new HashMap<String, Continents.Continent >()))
+                    .countries(new Countries(new HashMap<String, Countries.Country>()))
+                    .cards(new HashSet<>())
+                    .gameContext(GameContext.INSTANCE)
                     .build();
 
             GameContext.INSTANCE.addPlayer(player);
         });
         cancel(event);
     }
-
 
     @FXML
     void cancel(ActionEvent event) {

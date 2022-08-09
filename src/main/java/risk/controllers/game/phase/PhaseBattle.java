@@ -1,10 +1,7 @@
 package risk.controllers.game.phase;
 
 import javafx.util.Pair;
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.ToString;
-import lombok.Value;
+import lombok.*;
 
 import risk.controllers.dice.Dice;
 import risk.models.impl.Countries.Country;
@@ -12,6 +9,7 @@ import risk.models.impl.Countries.Country;
 import java.util.ArrayList;
 import java.util.Optional;
 
+@Builder
 @Getter
 public final class PhaseBattle {
 
@@ -50,12 +48,12 @@ public final class PhaseBattle {
     private Pair<ArrayList<Integer>, ArrayList<Integer>> rollDice() {
         Dice dice;
         if ( defender.getArmy()>= 2) {
-            dice = defender.getPlayer().getDice().DEFENCE_2_TIMES;
+            dice = Dice.DEFENCE_2_TIMES;
         } else {
-            dice = defender.getPlayer().getDice().DEFENCE_1_TIMES;
+            dice = Dice.DEFENCE_1_TIMES;
         }
 
-        ArrayList<Integer> attackerPoints = attacker.getPlayer().getDice().GetAllPoints();
+        ArrayList<Integer> attackerPoints = Dice.ATTACK_3_TIMES.GetAllPoints();
         ArrayList<Integer> defenderPoints = dice.GetAllPoints();
 
         return new Pair<>(attackerPoints, defenderPoints);

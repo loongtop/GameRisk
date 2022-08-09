@@ -13,6 +13,8 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Line;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
@@ -27,7 +29,9 @@ import lombok.Getter;
 import lombok.Setter;
 
 import risk.controllers.game.GameContext;
+import risk.controllers.game.phase.PhaseBattle;
 import risk.controllers.game.status.CountryInfo;
+import risk.models.Coordinator;
 import risk.models.impl.Countries;
 import risk.models.impl.Map;
 import risk.models.impl.Player;
@@ -54,11 +58,11 @@ public class GamePage implements Serializable {
     @FXML
     private TextArea playerInfo;
     @FXML
-    private Button deploy;
+    private Button deployBtn;
     @FXML
-    private Button attack;
+    private Button attackBtn;
     @FXML
-    private Button reinforce;
+    private Button reinforceBtn;
     @FXML
     private MenuItem Save;
     @FXML
@@ -74,14 +78,16 @@ public class GamePage implements Serializable {
     private GameContext gameContext = GameContext.INSTANCE;
     private Map gameMap = Map.INSTANCE;
 
-    public boolean manualPlacement;
-    public boolean isManualPlacementDone = false;
+    private boolean manualPlacement;
+    private boolean isManualPlacementDone = false;
 
-    public Countries.Country attacker = null;
-    public Countries.Country defender = null;
+    @Setter
+    private Countries.Country attacker = null;
+    @Setter
+    private Countries.Country defender = null;
 
-    public Countries.Country reinforcingProvince = null;
-    public Countries.Country clickedCountry;
+    private Countries.Country reinforcingProvince = null;
+    private Countries.Country clickedCountry;
 
     public void initialize() {
         if (!manualPlacement) {
@@ -110,9 +116,8 @@ public class GamePage implements Serializable {
         if (gameContext.isSamePhase(Phase.DEPLOY)) {
             gameContext.getCurrentPlayer().deploy();
         } else {
-            Alert alert = new Alert(Alert.AlertType.NONE);
-            alert.setContentText("Current phase is " + gameContext.getGameStatus().toString());
-            alert.show();
+            RiskAlert alert = new RiskAlert("Current phase is " + gameContext.getGameStatus().toString());
+            alert.showAlert();
         }
     }
 
@@ -122,9 +127,8 @@ public class GamePage implements Serializable {
         if (gameContext.isSamePhase(Phase.ATTACK)) {
             gameContext.getCurrentPlayer().attack(attacker, defender);
         } else {
-            Alert alert = new Alert(Alert.AlertType.NONE);
-            alert.setContentText("Current phase is " + gameContext.getGameStatus().toString());
-            alert.show();
+            RiskAlert alert = new RiskAlert("Current phase is " + gameContext.getGameStatus().toString());
+            alert.showAlert();
         }
     }
 
@@ -134,9 +138,8 @@ public class GamePage implements Serializable {
         if (gameContext.isSamePhase(Phase.REINFORCE)) {
             gameContext.getCurrentPlayer().reinforce();
         } else {
-            Alert alert = new Alert(Alert.AlertType.NONE);
-            alert.setContentText("Current phase is " + gameContext.getGameStatus().toString());
-            alert.show();
+            RiskAlert alert = new RiskAlert("Current phase is " + gameContext.getGameStatus().toString());
+            alert.showAlert();
         }
     }
 
@@ -156,8 +159,8 @@ public class GamePage implements Serializable {
                             CornerRadii.EMPTY,
                             Insets.EMPTY));
             btn.setBackground(background);
-            double x = ((double) country.getCoordinator().getX() / imageView.getImage().getWidth()) * imageView.getFitWidth();
-            double y = ((double) country.getCoordinator().getY() / imageView.getImage().getHeight()) * imageView.getFitHeight();
+
+            Coordinator cor = calCoordinator(country.getCoordinator());
 
             btn.setOnAction((s)->{
                 if (gameContext.isSamePhase(Phase.DEPLOY)) {
@@ -169,10 +172,15 @@ public class GamePage implements Serializable {
                 }
 
             });
-            AnchorPane.setLeftAnchor(btn, x);
-            AnchorPane.setTopAnchor(btn, y);
+            AnchorPane.setLeftAnchor(btn, cor.getX());
+            AnchorPane.setTopAnchor(btn, cor.getY());
             gameMapPane.getChildren().add(btn);
         }
+    }
+
+    private Coordinator calCoordinator(Coordinator cor) {
+        return new Coordinator( ((double)cor.getX() / imageView.getImage().getWidth()) * imageView.getFitWidth(),
+                ((double) cor.getY() / imageView.getImage().getHeight()) * imageView.getFitHeight());
     }
 
     public void actionDeploy(String name, RadioButton btn) {
@@ -197,7 +205,53 @@ public class GamePage implements Serializable {
         }
     }
 
-    public void actionAttack(String name, RadioButton btn) {}
+    public void actionAttack(String name, RadioButton btn) {
+        if (attacker == null) {
+            setAttacker( Map.INSTANCE.getCountriesMap().get(name));
+
+            Coordinator startPoint = calCoordinator(attacker.getCoordinator());
+            for (Countries.Country c : attacker.getAdjacentCountry().values()) {
+                Coordinator endPoint = calCoordinator(c.getCoordinator());
+                Line line = new Line(startPoint.getX(), startPoint.getY(), endPoint.getX(), endPoint.getY());
+                line.setStroke(Color.RED);
+                ((AnchorPane)btn.getParent()).getChildren().add(line);
+            }
+            return;
+        }
+
+        defender = Map.INSTANCE.getCountriesMap().get(name);
+        if (!attacker.getAdjacentCountry().values().contains(defender)) {
+            RiskAlert RiskAlert = new RiskAlert("Please choose right country");
+            RiskAlert.showAlert();
+            return;
+        }
+
+        StringBuilder message = new StringBuilder(attacker.getName()).append("====== ATTACK ====>").append(defender.getName());
+        Alert alert = new Alert(
+                Alert.AlertType.CONFIRMATION,
+                message.toString(),
+                new ButtonType("No", ButtonBar.ButtonData.NO),
+                new ButtonType("Yes", ButtonBar.ButtonData.YES));
+
+        Optional<ButtonType> btnAttack = alert.showAndWait();
+        if (btnAttack.get().getButtonData().equals(ButtonBar.ButtonData.YES)) {
+
+            PhaseBattle phaseBattle = PhaseBattle.builder()
+                    .attacker(attacker)
+                    .defender(defender)
+                    .result(null)
+                    .build();
+            PhaseBattle.Result result = phaseBattle.attack();
+
+            int size = attacker.getAdjacentCountry().values().size();
+            int childrenSize = ((AnchorPane)btn.getParent()).getChildren().size();
+            for (int i = 1; i < size + 1; i++){
+                ((AnchorPane)btn.getParent()).getChildren().remove(childrenSize-i);
+            }
+            attacker = null;
+        }
+        defender = null;
+    }
 
     public void actionReinforce(String name, RadioButton btn) {}
 
@@ -209,9 +263,8 @@ public class GamePage implements Serializable {
             readImage = ImageIO.read(Map.INSTANCE.getMapData().getImageFile());
             dimension2D = new Dimension2D(readImage.getWidth(), readImage.getHeight());
         } catch (Exception e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setContentText(e.getMessage());
-            alert.show();
+            RiskAlert alert = new RiskAlert(e.getMessage());
+            alert.showAlert();
         }
 
         Image image = null;
@@ -221,8 +274,8 @@ public class GamePage implements Serializable {
             e.printStackTrace();
         }
         imageView.setImage(image);
-        imageView.setFitWidth((int) dimension2D.getWidth() * 2);
-        imageView.setFitHeight((int) dimension2D.getHeight() * 2);
+        imageView.setFitWidth((int) dimension2D.getWidth() * 1.5);
+        imageView.setFitHeight((int) dimension2D.getHeight() * 1.5);
     }
 
     @FXML
@@ -252,9 +305,9 @@ public class GamePage implements Serializable {
         Optional<ButtonType> buttonType = alert.showAndWait();
         if (buttonType.get().getButtonData().equals(ButtonBar.ButtonData.YES)) {
             gameContext.goToNextPhase();
-            attack.setDisable(false);
-            deploy.setDisable(false);
-            reinforce.setDisable(false);
+            attackBtn.setDisable(false);
+            deployBtn.setDisable(false);
+            reinforceBtn.setDisable(false);
         } else {
             alert.close();
         }
@@ -262,18 +315,18 @@ public class GamePage implements Serializable {
 
     private void buttonDisabled() {
         if (gameContext.isSamePhase(Phase.DEPLOY)) {
-            attack.setDisable(true);
-            reinforce.setDisable(true);
+            attackBtn.setDisable(true);
+            reinforceBtn.setDisable(true);
         }
 
         if (gameContext.isSamePhase(Phase.ATTACK)) {
-            deploy.setDisable(true);
-            reinforce.setDisable(true);
+            deployBtn.setDisable(true);
+            reinforceBtn.setDisable(true);
         }
 
         if (gameContext.isSamePhase(Phase.REINFORCE)) {
-            deploy.setDisable(true);
-            attack.setDisable(true);
+            deployBtn.setDisable(true);
+            attackBtn.setDisable(true);
         }
     }
 

@@ -29,23 +29,31 @@ public class Player implements IPlayer {
     private String picName;
     private GameContext gameContext;
 
-    private Dice dice;
     private Set<Card> cards;
     private Countries countries;
-    private Continents.Continent continent;
+    private Continents continents;
 
     public String playerInfo() {
         StringBuilder info = new StringBuilder();
 
         info.append("Player information:").append("\n\n")
                 .append("Username :" ).append(username).append("\n\n")
-                .append("TotalArmy : ").append(totalArmy).append("\n\n")
-                .append("Army : ").append(leftArmy).append("\n\n");
+                .append("Total Army : ").append(totalArmy).append("\n\n")
+                .append("Left Army : ").append(leftArmy).append("\n\n");
 
-        if ( continent != null && countries != null) {
-            info.append("Continents : ").append(continent.getName()).append("\n\n")
-                    .append("Countries : ").append(countries.getAllValues().toArray().toString()).toString();
-        }
+         if ( continents != null) {
+             info.append("Continents : ");
+             for (Continents.Continent c : continents.getAllValues()){
+                 info.append(c.getName()).append(" ");
+             }
+             info.append("\n\n");
+         }
+         if ( countries != null) {
+             info.append("Countries : ");
+             for (Countries.Country c : countries.getAllValues()){
+                 info.append(c.getName()).append(" ");
+             }
+         }
 
         return info.toString();
     }

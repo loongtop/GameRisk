@@ -9,6 +9,6 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public class Coordinator {
-    private int x;
-    private int y;
+    private double x;
+    private double y;
 }
