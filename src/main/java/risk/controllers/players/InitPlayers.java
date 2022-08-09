@@ -12,12 +12,11 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import lombok.Getter;
 import lombok.Setter;
-import risk.controllers.dice.Dice;
 import risk.controllers.game.GameContext;
 import risk.models.impl.Continents;
 import risk.models.impl.Countries;
 import risk.models.impl.Player;
-import risk.utils.RiskAlert;
+import risk.utils.AlertError;
 
 import java.io.File;
 import java.util.HashMap;
@@ -120,7 +119,7 @@ public class InitPlayers {
         playerInfo.values().stream().forEach(s->{
             if ("".equals(s.getText().toString().trim())) {
                 status.set(false);
-                RiskAlert riskAlert = new RiskAlert("Please make sure all names are not null!");
+                AlertError riskAlert = new AlertError("Please make sure all names are not null!");
                 riskAlert.showAlert();
             }
         });

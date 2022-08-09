@@ -3,7 +3,6 @@ package risk.models.impl;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import risk.controllers.dice.Dice;
 import risk.controllers.game.GameContext;
 import risk.models.Card;
 import risk.models.IPlayer;
@@ -58,14 +57,6 @@ public class Player implements IPlayer {
         return info.toString();
     }
 
-    public void deploy() {
-    }
-
-    public void attack(Countries.Country attacker, Countries.Country defender) {
-    }
-
-    public void reinforce() {
-    }
 
     public void endTurn() {
     }

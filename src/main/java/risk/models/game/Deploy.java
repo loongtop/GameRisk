@@ -1,13 +1,11 @@
-package risk.controllers.game.phase;
+package risk.models.game;
 
-import javafx.fxml.FXML;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.text.Text;
-import javafx.scene.text.TextFlow;
 import lombok.*;
 
 import risk.models.impl.Countries;
 import risk.models.impl.Player;
+
+import java.io.Serializable;
 
 /**
  * This class represents the first phase of the game
@@ -16,18 +14,9 @@ import risk.models.impl.Player;
 
 @Setter
 @Getter
-public final class PhaseDeploy {
+public final class Deploy implements Serializable {
 
-    @FXML
-    private AnchorPane pane;
-    @FXML
-    private TextFlow territory;
-    @FXML
-    private TextFlow continent;
-    @FXML
-    private Text stage;
-    @FXML
-    private Text log;
+    private static final long serialVersionUID = -4322187166841713660L;
 
     private Player currentPlayer;
 
@@ -60,7 +49,7 @@ public final class PhaseDeploy {
 
         @Getter
         @NonNull
-        private final PhaseDeploy deploy;
+        private final Deploy deploy;
 
         @Getter
         private final int soldierLeft;

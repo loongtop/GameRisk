@@ -1,11 +1,9 @@
 package risk.models.impl;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 import lombok.*;
 import risk.models.IMap;
 import risk.models.Coordinator;
-import risk.utils.RiskAlert;
+import risk.utils.AlertError;
 
 import java.io.*;
 import java.util.*;
@@ -45,7 +43,7 @@ public enum Map implements IMap {
             BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
             mapFile = bufferedReader.lines();
         } catch (Exception e) {
-            RiskAlert alert = new RiskAlert(e.getMessage());
+            AlertError alert = new AlertError(e.getMessage());
             alert.showAlert();
         }
 
@@ -102,7 +100,7 @@ public enum Map implements IMap {
                 StringBuilder imagePath = new StringBuilder().append(file.getParent()).append("/").append(split[1]);
                 mapData.setImageFile(new File (imagePath.toString()));
                 if (!mapData.getImageFile().exists()) {
-                    RiskAlert alert = new RiskAlert(imagePath + " Image doesn't exist!");
+                    AlertError alert = new AlertError(imagePath + " Image doesn't exist!");
                     alert.showAlert();
                 }
                 break;
